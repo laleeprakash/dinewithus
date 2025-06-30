@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useState } from 'react';
 
 const Contact = () => {
+  const API = import.meta.env.VITE_API_URL;
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -22,7 +23,7 @@ const Contact = () => {
     e.preventDefault();
 
     try {
-      await axios.post("http://localhost:3000/feedback", {
+      await axios.post(`${API}/feedback`, {
         full_Name: fullName, // match the model field
         email,
         message,

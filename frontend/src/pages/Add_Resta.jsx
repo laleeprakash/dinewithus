@@ -4,34 +4,26 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 
+const API = import.meta.env.VITE_API_URL;  // ✅ Use environment variable
+
 function Add_Resta() {
   const [name, setname] = useState("");
   const [location, setlocation] = useState("");
   const [description, setdescription] = useState("");
-  const [imageurl, setimageurl] = useState("");  // Storing base64 encoded image URL
+  const [imageurl, setimageurl] = useState("");
   const navigate = useNavigate();
-  const { id } = useParams(); // Extracting the ownerId from URL params
+  const { id } = useParams();
 
-  const handlename = (e) => {
-    setname(e.target.value);
-  };
-
-  const handlelocation = (e) => {
-    setlocation(e.target.value);
-  };
-
-  const handledescription = (e) => {
-    setdescription(e.target.value);
-  };
+  const handlename = (e) => setname(e.target.value);
+  const handlelocation = (e) => setlocation(e.target.value);
+  const handledescription = (e) => setdescription(e.target.value);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setimageurl(reader.result);  // Storing the base64 encoded image URL
-      };
-      reader.readAsDataURL(file);  // Converting file to base64
+      reader.onloadend = () => setimageurl(reader.result);
+      reader.readAsDataURL(file);
     }
   };
 
@@ -39,7 +31,7 @@ function Add_Resta() {
     e.preventDefault();
 
     try {
-      const response = await axios.post(`http://localhost:3000/addrestaurant/${id}`, {
+      const response = await axios.post(`${API}/addrestaurant/${id}`, {
         imageurl,
         name,
         description,
@@ -47,9 +39,8 @@ function Add_Resta() {
         ownerId: id
       });
 
-      
       alert("Restaurant created successfully! Click OK.");
-      navigate(`/ownerpage/${id}`);  // Navigate to homepage after successful submission
+      navigate(`/ownerpage/${id}`);
     } catch (error) {
       console.error(error);
       alert("Error creating restaurant. Please try again.");
@@ -58,7 +49,7 @@ function Add_Resta() {
 
   const handleCancel = (e) => {
     e.preventDefault();
-    navigate("/homepage");  // Navigate to homepage if canceled
+    navigate("/homepage");
   };
 
   return (
@@ -69,45 +60,12 @@ function Add_Resta() {
             <div className="rounded-3xl bg-white w-9/10 p-8">
               <Heading label={"Add Restaurant"} />
 
-              {/* Form wrapper */}
-              <Inputbox
-                label={"Restaurant Name"}
-                type="text"
-                placeholder={"John_doe_restaurant"}
-                id={"restaurantName"}
-                name="name"
-                value={name}
-                onChange={handlename}
-                required
-              />
+              <Inputbox label="Restaurant Name" type="text" placeholder="John_doe_restaurant" id="restaurantName" name="name" value={name} onChange={handlename} required />
+              <Inputbox label="Location" type="text" placeholder="Second Street XYZ Colony" id="location" name="location" value={location} onChange={handlelocation} required />
+              <Inputbox label="Description" type="text" placeholder="A cozy place for great food!" id="description" name="description" value={description} onChange={handledescription} required />
 
-              <Inputbox
-                label={"Location"}
-                type="text"
-                placeholder={"Second Street XYZ Colony"}
-                id={"location"}
-                name="location"
-                value={location}
-                onChange={handlelocation}
-                required
-              />
-
-              <Inputbox
-                label={"Description"}
-                type="text"
-                placeholder={"A cozy place for great food!"}
-                id={"description"}
-                name="description"
-                value={description}
-                onChange={handledescription}
-                required
-              />
-
-              {/* Image input with preview */}
               <div>
-                <label htmlFor="image" className="block text-lg font-medium mb-2">
-                  Image of the Restaurant
-                </label>
+                <label htmlFor="image" className="block text-lg font-medium mb-2">Image of the Restaurant</label>
                 <input
                   type="file"
                   accept="image/*"
@@ -118,11 +76,7 @@ function Add_Resta() {
                 />
                 {imageurl && (
                   <div className="mt-4">
-                    <img
-                      src={imageurl}  // Preview of the base64 encoded image
-                      alt="Restaurant preview"
-                      className="w-32 h-32 object-cover rounded-md"
-                    />
+                    <img src={imageurl} alt="Restaurant preview" className="w-32 h-32 object-cover rounded-md" />
                   </div>
                 )}
               </div>
@@ -142,7 +96,6 @@ function Add_Resta() {
                   Cancel
                 </button>
               </div>
-              {/* End form wrapper */}
             </div>
           </div>
         </div>
