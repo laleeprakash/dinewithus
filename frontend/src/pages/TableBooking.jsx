@@ -41,7 +41,7 @@
           try {
             const dateStr = selectedDate.toISOString().split('T')[0];
             const response = await axios.get(
-              `http://localhost:3000/restaurants/${restaurantId}/availability`,
+              `${API}/restaurants/${restaurantId}/availability`,
               { params: { bookingDate: dateStr } }
             );
             setAvailableTables(response.data.availableTables || []);
@@ -115,12 +115,12 @@
         };
     
         const response = await axios.post(
-          `http://localhost:3000/booking/${userId}/${restaurantId}`,
+          `${API}/booking/${userId}/${restaurantId}`,
           bookingData
         );
     
         if (response.data.msg === "Booked successfully...") {
-          await axios.put("http://localhost:3000/updatestatus", { tableId: selectedTable });
+          await axios.put(`${API}/updatestatus`, { tableId: selectedTable });
           alert("Booking confirmed!");
           navigate(`/homepage/${userId}`);
         } else {
