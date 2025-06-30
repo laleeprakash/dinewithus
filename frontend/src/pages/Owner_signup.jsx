@@ -5,6 +5,7 @@ import { Inputbox } from "../components/Inputbox";
 import { Button } from "../components/Button";
 
 function Owner_signup() {
+   const API = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const [name, setname] = useState("");
   const [email, setemail] = useState("");
@@ -49,7 +50,7 @@ function Owner_signup() {
     setSuccess(""); // Clear previous success messages
 
     try {
-      const response = await axios.post("http://localhost:3000/owner-signup", {
+      const response = await axios.post(`${API}/owner-signup`, {
         name,
         email,
         password,

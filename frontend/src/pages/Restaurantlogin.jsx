@@ -6,6 +6,7 @@ import { Heading } from "../components/Heading";
 import { Inputbox } from "../components/Inputbox";
 
 function Restaurantlogin() {
+   const API = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [email, setemail] = useState("");
@@ -31,7 +32,7 @@ function Restaurantlogin() {
     setError(""); // Clear previous errors
 
     try {
-      const response = await axios.post("http://localhost:3000/owner-signin", {
+      const response = await axios.post(`${API}/owner-signin`, {
         email,
         password,
       });

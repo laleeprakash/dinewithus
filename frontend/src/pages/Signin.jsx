@@ -7,6 +7,7 @@ import Bottom from "../components/Bottom";
 import axios from "axios";
 
 function Signin() {
+   const API = import.meta.env.VITE_API_URL;
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);  // New state to handle loading
@@ -32,7 +33,7 @@ function Signin() {
     try {
       setIsLoading(true);  // Set loading to true when making the request
 
-      const response = await axios.post("http://localhost:3000/signin", {
+      const response = await axios.post(`${API}/signin`, {
         username,
         password,
       });

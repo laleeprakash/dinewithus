@@ -3,13 +3,14 @@ import { useParams } from "react-router";
 import axios from "axios";  // Add missing import
 
 function Payment() {
+   const API = import.meta.env.VITE_API_URL;
   const [user, setUser] = useState(null);  // Initialize state with null instead of an empty array
   const { userId, restaurantId, selectedTable } = useParams();
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/user/${userId}`);
+        const response = await axios.get(`${API}/${userId}`);
         setUser(response.data.user || {});  // Set the user data (as an object)
       } catch (error) {
         console.error("Error Fetching User Options:", error);

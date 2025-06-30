@@ -6,7 +6,7 @@ import { Inputbox } from '../components/Inputbox';
 import { Button } from '../components/Button';
 
 function Profile() {
-  
+   const API = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const { id } = useParams();
   const [username, setUsername] = useState(''); // State for storing the fetched username
@@ -48,7 +48,7 @@ function Profile() {
       return
     }
       try {
-      const response = await axios.put(`http://localhost:3000/user/update/${id}`, {
+      const response = await axios.put(`${API}/user/update/${id}`, {
         username,
         phone,
         name,
@@ -69,7 +69,7 @@ function Profile() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/user/${id}`);
+        const response = await axios.get(`${API}/user/${id}`);
         const userData = response.data;
 
         // Set the fetched data in state

@@ -3,11 +3,12 @@ import { useEffect, useState } from "react";
 
 function Feedback() {
   const [feedback, setFeedback] = useState([]);
+  const API = import.meta.env.VITE_API_URL; // Get the base URL from env
 
   useEffect(() => {
     const fetchFeedback = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/feedbacks");
+        const response = await axios.get(`${API}/feedbacks`);
         setFeedback(response.data.feedbacks || []);
       } catch (error) {
         console.error("Error fetching feedbacks:", error);
@@ -15,7 +16,7 @@ function Feedback() {
     };
 
     fetchFeedback();
-  }, []);
+  }, [API]);
 
   return (
     <div>
@@ -26,7 +27,7 @@ function Feedback() {
         <table className="w-full border-collapse mt-5">
           <thead>
             <tr className="bg-gray-100">
-              <th className="border border-gray-300 px-4 py-2 text-left">id</th>
+              <th className="border border-gray-300 px-4 py-2 text-left">ID</th>
               <th className="border border-gray-300 px-4 py-2 text-left">Name</th>
               <th className="border border-gray-300 px-4 py-2 text-left">Email</th>
               <th className="border border-gray-300 px-4 py-2 text-left">Message</th>

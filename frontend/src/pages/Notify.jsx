@@ -2,6 +2,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 
 function Notify() {
+   const API = import.meta.env.VITE_API_URL;
   const location = useLocation();
   const { bookedSeats } = location.state || { bookedSeats: [] }; // Get booked seats from state
 

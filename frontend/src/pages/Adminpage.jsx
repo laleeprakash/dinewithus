@@ -3,27 +3,21 @@ import axios from "axios";
 import { useNavigate } from "react-router";
 
 function AdminPage() {
-  const [restaurants, setRestaurants] = useState([]); // Initialize as empty array
-  const [loading, setLoading] = useState(true); // Track loading state
+  const [restaurants, setRestaurants] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const handlenavigate = () => {
-    navigate("/feedbacks");
-  };
+  const API = import.meta.env.VITE_API_URL; // ✅ Use environment variable
 
-  const handleApproved = () => {
-    navigate("/approvedrestaurant");
-  };
-
-  const handleRejected = () => {
-    navigate("/rejectedrestaurant");
-  };
+  const handlenavigate = () => navigate("/feedbacks");
+  const handleApproved = () => navigate("/approvedrestaurant");
+  const handleRejected = () => navigate("/rejectedrestaurant");
 
   useEffect(() => {
     const fetchRestaurants = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/restaurants");
-        setRestaurants(response.data.restaurants || []); // Ensure we are always setting an array
+        const response = await axios.get(`${API}/restaurants`); // ✅ Use dynamic base URL
+        setRestaurants(response.data.restaurants || []);
       } catch (error) {
         console.error("Error fetching restaurants:", error);
       } finally {
@@ -31,15 +25,15 @@ function AdminPage() {
       }
     };
     fetchRestaurants();
-  }, []);
+  }, [API]); // ✅ Watch API in case it changes
 
   const handleApproveReject = (id) => {
-    navigate(`/approve-reject/${id}`); // Navigate to the approval page with the restaurant ID
+    navigate(`/approve-reject/${id}`);
   };
 
   return (
     <div className="p-6">
-      <div className="flex flex-row-reverse gap-4 right-1 top-0 ">
+      <div className="flex flex-row-reverse gap-4 right-1 top-0">
         <div
           className="flex flex-row-reverse font-extrabold text-lg cursor-pointer hover:opacity-20"
           onClick={handlenavigate}
@@ -86,7 +80,7 @@ function AdminPage() {
                   <td className="px-6 py-4 text-sm text-gray-700">
                     {restaurant.imageurl && (
                       <img
-                        src={`${restaurant.imageurl}`}
+                        src={restaurant.imageurl}
                         alt={restaurant.name}
                         className="w-16 h-16 object-cover"
                       />
@@ -98,7 +92,7 @@ function AdminPage() {
                     ) : (
                       <div
                         className="flex flex-row gap-3 border w-fit p-2 cursor-pointer hover:bg-gray-100"
-                        onClick={() => handleApproveReject(restaurant.id)} // Navigate to approval page
+                        onClick={() => handleApproveReject(restaurant.id)}
                       >
                         Approve or Reject
                       </div>

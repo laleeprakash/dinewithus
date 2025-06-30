@@ -1,37 +1,48 @@
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Heading } from "../components/Heading";
-import { Inputbox } from "../components/Inputbox";
-import { Button } from "../components/Button";
-import Bottom from "../components/Bottom";
+import axios from "axios";
 
 function Adminlogin() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const mailhandler = (e) => {
-    setUsername(e.target.value);
-  };
+  const API = import.meta.env.VITE_API_URL;
 
-  const passwordhandler = (e) => {
-    setPassword(e.target.value);
-  };
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
-  const loginhandler = () => {
-    navigate("/adminpage");
+    try {
+      const response = await axios.post(`${API}/adminlogin`, {
+        email: username,
+        password: password,
+      });
+
+      if (response.data.success) {
+        // Navigate to admin page after successful login
+        navigate("/adminpage");
+      } else {
+        setError("Invalid admin credentials.");
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("Login failed. Please check your credentials or try again later.");
+    }
   };
 
   return (
     <div className="flex justify-center items-center w-full h-screen bg-white">
       <div className="bg-white p-8 rounded-xl w-full max-w-lg flex flex-col justify-center items-center shadow-lg">
-        {/* Heading */}
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">Login as Admin</h1>
         <p className="text-center text-gray-600 mb-6">Use the credentials to login</p>
-        
-        {/* Form */}
-        <form onSubmit={loginhandler} className="w-full">
-          {/* Email Input */}
+
+        {/* Show error if login fails */}
+        {error && (
+          <div className="mb-4 text-red-500 text-center font-semibold">{error}</div>
+        )}
+
+        <form onSubmit={handleLogin} className="w-full">
           <div className="mb-4">
             <label htmlFor="email-signin" className="block text-gray-700 text-lg">Email</label>
             <input
@@ -40,12 +51,11 @@ function Adminlogin() {
               placeholder="Enter your email"
               className="w-full p-3 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               value={username}
-              onChange={mailhandler}
+              onChange={(e) => setUsername(e.target.value)}
               required
             />
           </div>
 
-          {/* Password Input */}
           <div className="mb-6">
             <label htmlFor="password-signin" className="block text-gray-700 text-lg">Password</label>
             <input
@@ -54,12 +64,11 @@ function Adminlogin() {
               placeholder="Enter your password"
               className="w-full p-3 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               value={password}
-              onChange={passwordhandler}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
 
-          {/* Login Button */}
           <button
             type="submit"
             className="w-full p-3 bg-green-600 text-white font-semibold rounded-md hover:bg-green-500 transition duration-200"
@@ -68,7 +77,6 @@ function Adminlogin() {
           </button>
         </form>
 
-        {/* Bottom Links */}
         <div className="text-center mt-4">
           <p className="text-sm">
             Don't have an account?{" "}

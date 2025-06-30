@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 
 function View_Booked_dining() {
+   const API = import.meta.env.VITE_API_URL;
   const { id } = useParams();
   const [ownerData, setOwnerData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -17,7 +18,7 @@ function View_Booked_dining() {
     try {
       setLoading(true);
       setError(null);
-      const response = await axios.get(`http://localhost:3000/owner/${id}`);
+      const response = await axios.get(`${API}/owner/${id}`);
       setOwnerData(response.data);
     } catch (error) {
       handleApiError(error);
@@ -48,7 +49,7 @@ function View_Booked_dining() {
       setUpdatingId(bookingId);
       
       // Update the status on the backend
-      await axios.put(`http://localhost:3000/tables/${tableId}/status`, {
+      await axios.put(`${API}/tables/${tableId}/status`, {
         status: 0 // 0 means available
       });
 

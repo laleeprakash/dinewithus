@@ -3,16 +3,17 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router";
 
 function ApproveRejectPage() {
-  const { id } = useParams(); // Get the restaurant ID from the URL
-  const [restaurant, setRestaurant] = useState(null); // Initialize as null
+  const { id } = useParams();
+  const [restaurant, setRestaurant] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const API = import.meta.env.VITE_API_URL; // ✅ Load base API URL
 
   useEffect(() => {
     const fetchRestaurant = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/restaurant/${id}`);
-        setRestaurant(response.data); // Set the restaurant object directly
+        const response = await axios.get(`${API}/restaurant/${id}`);
+        setRestaurant(response.data);
       } catch (error) {
         console.error("Error fetching restaurant:", error);
       } finally {
@@ -20,14 +21,14 @@ function ApproveRejectPage() {
       }
     };
     fetchRestaurant();
-  }, [id]);
+  }, [id, API]);
 
   const handleApprove = async () => {
     try {
-      const response = await axios.put(`http://localhost:3000/approverestaurant/${id}`);
-      if (response.status === 200) { // Check for status 200 instead of 201
+      const response = await axios.put(`${API}/approverestaurant/${id}`);
+      if (response.status === 200) {
         alert("Restaurant approved successfully");
-        navigate("/adminpage"); // Navigate back to the admin page
+        navigate("/adminpage");
       }
     } catch (error) {
       console.error("Error approving restaurant:", error);
@@ -37,10 +38,10 @@ function ApproveRejectPage() {
 
   const handleReject = async () => {
     try {
-      const response = await axios.put(`http://localhost:3000/rejected/${id}`);
+      const response = await axios.put(`${API}/rejected/${id}`);
       if (response.status === 200) {
         alert("Restaurant rejected successfully");
-        navigate("/adminpage"); // Navigate back to the admin page
+        navigate("/adminpage");
       }
     } catch (error) {
       console.error("Error rejecting restaurant:", error);
@@ -48,13 +49,8 @@ function ApproveRejectPage() {
     }
   };
 
-  if (loading) {
-    return <div className="text-center">Loading...</div>;
-  }
-
-  if (!restaurant) {
-    return <div className="text-center">Restaurant not found.</div>;
-  }
+  if (loading) return <div className="text-center">Loading...</div>;
+  if (!restaurant) return <div className="text-center">Restaurant not found.</div>;
 
   return (
     <div className="p-6">
@@ -71,22 +67,13 @@ function ApproveRejectPage() {
           />
         )}
         <div className="flex gap-4">
-          <button
-            className="bg-green-500 text-white p-2 rounded"
-            onClick={handleApprove}
-          >
+          <button className="bg-green-500 text-white p-2 rounded" onClick={handleApprove}>
             Approve
           </button>
-          <button
-            className="bg-red-500 text-white p-2 rounded"
-            onClick={handleReject}
-          >
+          <button className="bg-red-500 text-white p-2 rounded" onClick={handleReject}>
             Reject
           </button>
-          <button
-            className="bg-gray-500 text-white p-2 rounded"
-            onClick={() => navigate("/adminpage")} // Navigate back to admin page
-          >
+          <button className="bg-gray-500 text-white p-2 rounded" onClick={() => navigate("/adminpage")}>
             Back
           </button>
         </div>
@@ -95,4 +82,4 @@ function ApproveRejectPage() {
   );
 }
 
-export default ApproveRejectPage; 
+export default ApproveRejectPage;

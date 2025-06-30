@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
 function Rejected() {
+   const API = import.meta.env.VITE_API_URL;
   const [rejectedRestaurants, setRejectedRestaurants] = useState([]);
   const [loading, setLoading] = useState(true); // Track loading state
   const [error, setError] = useState(null); // Track error state
@@ -13,7 +14,7 @@ function Rejected() {
   useEffect(() => {
     const fetchRejectedRestaurants = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/rejectedrestaurant");
+        const response = await axios.get(`${API}/rejectedrestaurant`);
         if (response.data && response.data.rejectedrestaurant) {
           setRejectedRestaurants(response.data.rejectedrestaurant);
         } else {

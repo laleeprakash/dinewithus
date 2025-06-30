@@ -5,6 +5,7 @@
   import "react-datepicker/dist/react-datepicker.css";
 
   function TableBooking() {
+     const API = import.meta.env.VITE_API_URL;
     const { userId, restaurantId } = useParams();
     const navigate = useNavigate();
     const [allTables, setAllTables] = useState([]); // All tables in the restaurant
@@ -20,7 +21,7 @@
       const fetchAllTables = async () => {
         try {
           const response = await axios.get(
-            `http://localhost:3000/restaurants/${restaurantId}/tables`
+            `${API}/restaurants/${restaurantId}/tables`
           );
           setAllTables(response.data.tables || []);
           setLoading(false);

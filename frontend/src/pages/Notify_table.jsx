@@ -8,9 +8,11 @@ function NotifyTable() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const apiUrl = process.env.REACT_APP_API_URL;
+
   const handleNotify = (table) => {
     alert(`Notification sent for Table #${table.tableNumber}`);
-    // Here you could also add an API call to notify the restaurant staff
+    // Add API call here if needed
   };
 
   const handleBackToHomepage = () => {
@@ -24,14 +26,12 @@ function NotifyTable() {
           throw new Error("Restaurant ID is missing");
         }
 
-        const response = await fetch(
-          `http://localhost:3000/${restaurantId}/notify_restaurant`
-        );
-        
+        const response = await fetch(`${apiUrl}/${restaurantId}/notify_restaurant`);
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+
         const data = await response.json();
         setNotifyData(data);
       } catch (err) {
@@ -42,10 +42,10 @@ function NotifyTable() {
     };
 
     fetchBookedTables();
-  }, [restaurantId]);
+  }, [restaurantId, apiUrl]);
 
   if (loading) return <div className="p-5 text-center">Loading...</div>;
-  if (error) return <div className="p-5 text-red-500 text-2xl">All the table Available </div>;
+  if (error) return <div className="p-5 text-red-500 text-2xl">All the tables are available</div>;
   if (!notifyData) return <div className="p-5">No booked tables found</div>;
 
   return (
@@ -71,17 +71,15 @@ function NotifyTable() {
             </div>
           )}
         </div>
-        
+
         <h1 className="text-3xl text-gray-800 mb-2">{notifyData.name}</h1>
-        <p className="text-lg text-gray-600">
-          📍 {notifyData.location}
-        </p>
+        <p className="text-lg text-gray-600">📍 {notifyData.location}</p>
       </div>
-      
+
       <h2 className="text-2xl text-gray-800 mb-6 pb-2 border-b border-gray-200">
         Booked Tables ({notifyData.tables?.length || 0})
       </h2>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {notifyData.tables?.length > 0 ? (
           notifyData.tables.map((table) => (
@@ -90,12 +88,8 @@ function NotifyTable() {
               className="bg-white rounded-xl shadow-sm p-6 transition-all hover:-translate-y-1 hover:shadow-md cursor-pointer"
             >
               <div className="mb-4">
-                <h3 className="text-xl text-blue-500 mb-2">
-                  Table #{table.tableNumber}
-                </h3>
-                <p className="text-gray-600">
-                  Capacity: {table.capacity} people
-                </p>
+                <h3 className="text-xl text-blue-500 mb-2">Table #{table.tableNumber}</h3>
+                <p className="text-gray-600">Capacity: {table.capacity} people</p>
               </div>
               <div className="text-center">
                 <button 

@@ -90,14 +90,14 @@ function Res() {
   const [error, setError] = useState(null);
   const { id } = useParams();
   const navigate = useNavigate();
-  
+   const API = import.meta.env.VITE_API_URL;
   // Fetch userId from localStorage
   const userId = localStorage.getItem('userId');
 
   useEffect(() => {
     const fetchRestaurant = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/restaurant/${id}`);
+        const response = await axios.get(`${API}/restaurant/${id}`);
         setRestaurant(response.data);
         setError(null); // Clear previous errors
       } catch (error) {

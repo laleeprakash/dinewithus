@@ -8,6 +8,7 @@ import { Button } from "../components/Button";
 import Bottom from "../components/Bottom";
 
 function Signup() {
+   const API = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
 
   // State initialization (useState)
@@ -57,7 +58,7 @@ function Signup() {
 
     try {
       // Make a POST request to the backend to create a user
-      const response = await axios.post("http://localhost:3000/signup", {
+      const response = await axios.post(`${API}/signup`, {
         username,
         name,
         phone,

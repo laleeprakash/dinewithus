@@ -4,16 +4,20 @@ import { useNavigate } from "react-router";
 
 function Approverestaurant() {
   const [approverestaurant, setApproverestaurant] = useState([]);
-  const [loading, setLoading] = useState(true); // Track loading state
-  const [error, setError] = useState(null); // Track error state
-  const navigate = useNavigate()
-  const handleadminpage = () =>{
-    navigate("/adminpage")
-  }
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  const API = import.meta.env.VITE_API_URL; // ✅ Use environment variable
+
+  const handleadminpage = () => {
+    navigate("/adminpage");
+  };
+
   useEffect(() => {
     const fetchApproverestaurant = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/approvedrestaurant");
+        const response = await axios.get(`${API}/approvedrestaurant`);
         if (response.data && response.data.approvedrestaurant) {
           setApproverestaurant(response.data.approvedrestaurant);
         } else {
@@ -28,20 +32,20 @@ function Approverestaurant() {
     };
 
     fetchApproverestaurant();
-  }, []); // Empty dependency array to only run once on mount
+  }, [API]);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold mb-6">Approved Restaurants</h1>
-      <div className="flex flex-row-reverse font-bold text-xl cursor-pointer" onClick={handleadminpage}>Back to Admin dashboard</div>
+      <div
+        className="flex flex-row-reverse font-bold text-xl cursor-pointer"
+        onClick={handleadminpage}
+      >
+        Back to Admin dashboard
+      </div>
       {approverestaurant.length > 0 ? (
         <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow">
           <thead>
@@ -70,7 +74,11 @@ function Approverestaurant() {
                     />
                   )}
                 </td>
-                <td className="px-6 py-4 text-sm text-gray-700"><h1 className="p-3 border w-24 bg-green-500">Approved</h1></td>
+                <td className="px-6 py-4 text-sm text-gray-700">
+                  <h1 className="p-3 border w-24 bg-green-500 text-white text-center rounded-md">
+                    Approved
+                  </h1>
+                </td>
               </tr>
             ))}
           </tbody>

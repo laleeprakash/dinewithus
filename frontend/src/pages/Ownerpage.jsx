@@ -4,6 +4,7 @@ import { Heading } from "../components/Heading";
 import axios from "axios";
 
 function Ownerpage() {
+   const API = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const { id } = useParams(); // Get the owner ID from the URL
   const [restaurants, setRestaurants] = useState([]);
@@ -17,7 +18,7 @@ function Ownerpage() {
   useEffect(() => {
     const fetchRestaurants = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/restaurants/${id}`);
+        const response = await axios.get(`${API}/restaurants/${id}`);
         setRestaurants(response.data.restaurants); // Set restaurants data
         setLoading(false);
       } catch (error) {

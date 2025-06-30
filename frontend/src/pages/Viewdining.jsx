@@ -6,12 +6,12 @@ function Viewdining() {
   const { id } = useParams(); // Get the restaurant ID from the URL
   const [diningOptions, setDiningOptions] = useState([]);
   const [loading, setLoading] = useState(true);
-
+ const API = import.meta.env.VITE_API_URL;
   // Fetch dining options for the restaurant on page load
   useEffect(() => {
     const fetchDiningOptions = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/restaurants/${id}/dining`);
+        const response = await axios.get(`${API}/restaurants/${id}/dining`);
         setDiningOptions(response.data.diningOptions); // Set dining options data
         setLoading(false);
       } catch (error) {
