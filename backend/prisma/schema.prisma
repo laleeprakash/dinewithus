@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model user {
+  id       Int      @id @default(autoincrement())
+  username String   @unique
+  name     String
+  password String
+  phone    String   @unique
+  bookings Booking[] // This defines the relationship between User and Booking
+}
+
+model feedback {
+  id        Int    @id @default(autoincrement())
+  full_Name String
+  email     String @unique
+  message   String
+}
+
+model restaurant_owner {
+  id         Int         @id @default(autoincrement())
+  name       String
+  email      String @unique
+  password   String
+  restaurant restaurant[] // A restaurant_owner can have multiple restaurants
+}
+
+model restaurant {
+  id          Int            @id @default(autoincrement())
+  name        String
+  location    String         @unique
+  description String
+  imageurl    String
+  Rating      Int            @default(0)
+  approval    Int            @default(-1) // -1: Pending, 0: Rejected, 1: Approved
+  tables      Table[]        // Each restaurant has many tables
+  bookings    Booking[]      // Each restaurant has many bookings
+  ownerId     Int            // Foreign key to restaurant_owner
+  owner       restaurant_owner @relation(fields: [ownerId], references: [id])
+}
+
+model Table {
+  id           Int       @id @default(autoincrement())
+  tableNumber  Int
+  capacity     Int
+  userId       Int?      // Optional: Added to relate to user (if applicable)
+  restaurantId Int
+  restaurant   restaurant @relation(fields: [restaurantId], references: [id])
+  bookings     Booking[]  // One table can have many bookings
+  status       Int @default(0) // Default status of the table (0: available, 1: booked)
+}
+
+model Booking {
+  id           Int      @id @default(autoincrement())
+  customerId   Int      // Foreign key for the user booking the table
+  bookingDate  DateTime
+  numberOfGuests Int
+  tableId      Int      // Foreign key for the booked table
+  table        Table    @relation(fields: [tableId], references: [id])
+  restaurantId Int
+  restaurant   restaurant @relation(fields: [restaurantId], references: [id])
+  
+  user         user     @relation(fields: [customerId], references: [id]) // Correct relation to user
+}
+
+model Admin {
+  id       Int    @id @default(autoincrement())
+  name     String?
+  username String @unique
+  password String
+}
