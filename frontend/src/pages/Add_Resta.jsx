@@ -1,54 +1,58 @@
-import { Heading } from "../components/Heading";
-import { Inputbox } from "../components/Inputbox";
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
+import { Heading } from "../components/Heading";
+import { Inputbox } from "../components/Inputbox";
 
-const API = import.meta.env.VITE_API_URL;  // ✅ Use environment variable
+const API = import.meta.env.VITE_API_URL; // Ensure this is defined in .env
 
 function Add_Resta() {
   const [name, setname] = useState("");
   const [location, setlocation] = useState("");
   const [description, setdescription] = useState("");
-  const [imageurl, setimageurl] = useState("");
+  const [previewImage, setPreviewImage] = useState(null);
   const navigate = useNavigate();
   const { id } = useParams();
-
-  const handlename = (e) => setname(e.target.value);
-  const handlelocation = (e) => setlocation(e.target.value);
-  const handledescription = (e) => setdescription(e.target.value);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => setimageurl(reader.result);
-      reader.readAsDataURL(file);
+      setPreviewImage(URL.createObjectURL(file)); // For image preview
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const file = document.getElementById("image").files[0];
+    if (!file) {
+      alert("Please select an image.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("location", location);
+    formData.append("description", description);
+    formData.append("image", file); // Add image file
+    formData.append("ownerId", id);
+
     try {
-      const response = await axios.post(`${API}/addrestaurant/${id}`, {
-        imageurl,
-        name,
-        description,
-        location,
-        ownerId: id
+      await axios.post(`${API}/addrestaurant/${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
 
-      alert("Restaurant created successfully! Click OK.");
+      alert("Restaurant created successfully!");
       navigate(`/ownerpage/${id}`);
     } catch (error) {
-      console.error(error);
+      console.error("Error:", error);
       alert("Error creating restaurant. Please try again.");
     }
   };
 
-  const handleCancel = (e) => {
-    e.preventDefault();
+  const handleCancel = () => {
     navigate("/homepage");
   };
 
@@ -60,23 +64,56 @@ function Add_Resta() {
             <div className="rounded-3xl bg-white w-9/10 p-8">
               <Heading label={"Add Restaurant"} />
 
-              <Inputbox label="Restaurant Name" type="text" placeholder="John_doe_restaurant" id="restaurantName" name="name" value={name} onChange={handlename} required />
-              <Inputbox label="Location" type="text" placeholder="Second Street XYZ Colony" id="location" name="location" value={location} onChange={handlelocation} required />
-              <Inputbox label="Description" type="text" placeholder="A cozy place for great food!" id="description" name="description" value={description} onChange={handledescription} required />
+              <Inputbox
+                label="Restaurant Name"
+                type="text"
+                placeholder="John_doe_restaurant"
+                id="restaurantName"
+                name="name"
+                value={name}
+                onChange={(e) => setname(e.target.value)}
+                required
+              />
+              <Inputbox
+                label="Location"
+                type="text"
+                placeholder="Second Street XYZ Colony"
+                id="location"
+                name="location"
+                value={location}
+                onChange={(e) => setlocation(e.target.value)}
+                required
+              />
+              <Inputbox
+                label="Description"
+                type="text"
+                placeholder="A cozy place for great food!"
+                id="description"
+                name="description"
+                value={description}
+                onChange={(e) => setdescription(e.target.value)}
+                required
+              />
 
-              <div>
-                <label htmlFor="image" className="block text-lg font-medium mb-2">Image of the Restaurant</label>
+              <div className="mt-4">
+                <label htmlFor="image" className="block text-lg font-medium mb-2">
+                  Image of the Restaurant
+                </label>
                 <input
                   type="file"
                   accept="image/*"
                   id="image"
-                  onChange={handleFileChange}
                   className="block w-full p-2 border border-gray-300 rounded-md"
+                  onChange={handleFileChange}
                   required
                 />
-                {imageurl && (
+                {previewImage && (
                   <div className="mt-4">
-                    <img src={imageurl} alt="Restaurant preview" className="w-32 h-32 object-cover rounded-md" />
+                    <img
+                      src={previewImage}
+                      alt="Preview"
+                      className="w-32 h-32 object-cover rounded-md"
+                    />
                   </div>
                 )}
               </div>

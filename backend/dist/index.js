@@ -15,7 +15,19 @@ app.use(cors({ origin: 'https://dinewith.netlify.app', credentials: true }));
 app.use(express.json());
 app.use(bodyParser.json({ limit: '10mb' })); // Adjust the limit as needed
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/'); // Make sure this folder exists
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname);
+  },
+});
 
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB max file size
+});
 // Create user and return JWT token
 app.get("/",function(req,res){
      res.send("hello from localhots:3000")
@@ -263,34 +275,31 @@ app.get("/rejectedrestaurant", async function(req, res) {
 
 
 
-app.post('/addrestaurant/:id', async (req, res) => {  // Update the route to include the dynamic id in URL
-  const { id } = req.params;  // Get ownerId from URL params
-  const { name, location, description, imageurl } = req.body;
+app.post('/addrestaurant/:id', upload.single('image'), async (req, res) => {
+  const { id } = req.params;
+  const { name, location, description } = req.body;
 
-  console.log("Request Body:", req.body);  // Debugging
-  console.log("Request Params:", req.params);  // Debugging
-
-  // Validation check
-  if (!name || !location || !imageurl) {
-    return res.status(400).send({ error: 'Please provide name, location, description, and image URL.' });
+  if (!name || !location || !description || !req.file) {
+    return res.status(400).send({ error: 'Missing required fields or image.' });
   }
 
+  const imageBuffer = req.file.buffer;
+  const imageurl = `data:${req.file.mimetype};base64,${imageBuffer.toString('base64')}`;
+
   try {
-    // Check if ownerId is valid (Optional, depending on your logic)
     const owner = await prisma.restaurant_owner.findUnique({ where: { id: parseInt(id) } });
     if (!owner) {
       return res.status(404).send({ error: 'Owner not found.' });
     }
 
-    // Create restaurant
     const restaurant = await prisma.restaurant.create({
       data: {
         name,
         location,
         description,
-        imageurl, 
-        ownerId: parseInt(id)  // Ensure ownerId is a number
-      }
+        imageurl,
+        ownerId: parseInt(id),
+      },
     });
 
     res.status(201).send({ message: 'Restaurant added successfully!', restaurant });
@@ -299,6 +308,8 @@ app.post('/addrestaurant/:id', async (req, res) => {  // Update the route to inc
     res.status(500).send({ error: 'An error occurred while adding the restaurant.' });
   }
 });
+
+
 app.get("/restaurants/:id/dining", async (req, res) => {
   const { id } = req.params; // Get restaurant ID from URL params
 
