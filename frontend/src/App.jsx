@@ -1,8 +1,8 @@
-import { BrowserRouter, Route, Routes as Router } from "react-router-dom";
+import { BrowserRouter, Route, Routes as Router, useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import axios from "axios";
 
-// Pages & Components (as per your original)
+// Pages & Components
 import Homepage from "./pages/Homepage";
 import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
@@ -34,11 +34,25 @@ import Bookedtable from "./pages/BookedTable";
 import Notify_table from "./pages/Notify_table";
 import View_Booked_dining from "./pages/View_Booked_dining";
 
-function App() {
-  
+// 👇 Case-insensitive redirect component
+function CaseRedirect() {
+  const location = useLocation();
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    const lowercasePath = location.pathname.toLowerCase();
+    if (location.pathname !== lowercasePath) {
+      navigate(lowercasePath, { replace: true });
+    }
+  }, [location, navigate]);
+
+  return null;
+}
+
+function App() {
   return (
     <BrowserRouter>
+      <CaseRedirect />
       <Router>
         <Route path="/" element={<Homepage />} />
         <Route path="/signin" element={<Signin />} />
@@ -52,8 +66,8 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/feedback" element={<Contact />} />
         <Route path="/privacy" element={<Privacy />} />
-        <Route path="/Adminpage" element={<AdminPage />} />
-        <Route path="/tableBooking" element={<TableBooking />} />
+        <Route path="/adminpage" element={<AdminPage />} />
+        <Route path="/tablebooking" element={<TableBooking />} />
         <Route path="/resta" element={<Res />} />
         <Route path="/:userId/resta/:id" element={<Res />} />
         <Route path="/notify" element={<Notify />} />
@@ -73,7 +87,7 @@ function App() {
         <Route path="/:userId/:restaurantId/payment/:id" element={<Payment />} />
         <Route path="/:userId/bookedtable" element={<Bookedtable />} />
         <Route path="/:userId/:restaurantId/notify" element={<Notify_table />} />
-        <Route path="/view_Booked_dining/:id" element={<View_Booked_dining />} />
+        <Route path="/view_booked_dining/:id" element={<View_Booked_dining />} />
       </Router>
     </BrowserRouter>
   );
