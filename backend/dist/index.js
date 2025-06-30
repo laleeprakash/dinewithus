@@ -10,7 +10,7 @@ const bodyParser = require('body-parser');
 const prisma = new PrismaClient(); 
 
 app.use(cors({
-  origin: 'https://686288e15e5b16420c0b2b40--dinewith.netlify.app',
+  origin: 'https://dinewith.netlify.app/',
   credentials: true
 }));
 app.use(express.json());
