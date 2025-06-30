@@ -9,7 +9,10 @@ const app = express();
 const bodyParser = require('body-parser');  
 const prisma = new PrismaClient(); 
 
-app.use(cors());
+app.use(cors({
+  origin: 'https://686288e15e5b16420c0b2b40--dinewith.netlify.app',
+  credentials: true
+}));
 app.use(express.json());
 app.use(bodyParser.json({ limit: '10mb' })); // Adjust the limit as needed
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
