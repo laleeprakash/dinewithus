@@ -35,17 +35,7 @@ import Notify_table from "./pages/Notify_table";
 import View_Booked_dining from "./pages/View_Booked_dining";
 
 function App() {
-  useEffect(() => {
-    const apiBaseUrl = import.meta.env.VITE_API_URL;
-
-    axios.get(`${apiBaseUrl}/users`)
-      .then(response => {
-        console.log("Fetched users from backend:", response.data);
-      })
-      .catch(error => {
-        console.error("Error fetching users:", error);
-      });
-  }, []);
+  
 
   return (
     <BrowserRouter>
