@@ -833,7 +833,16 @@ app.get("/booked_table", async function(req, res) {
     res.status(500).send("Server error");
   }
 });
-
+app.get("/owner" , async function(req,res){
+  const owner =  await prisma.restaurant_owner.findMany({
+    select:{
+      id:true,
+      email:true,
+      password:true,
+      name:true
+    }
+  })
+})
 app.get("/restaurants/:restaurantId/availability", async (req, res) => {
   try {
     const { bookingDate } = req.query;
