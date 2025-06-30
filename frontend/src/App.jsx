@@ -60,10 +60,10 @@ function App() {
         <Route path="/adminlogin" element={<Adminlogin />} />
         <Route path="/adminpage" element={<Adminpage />} />
         <Route path="/about" element={<About />} />
-        <Route path="/feedback" element={<Contact />} />
-        <Route path="/Privacy" element={<Privacy />} />
+        <Route path="https://frontend-dinewithus.onrender.com/feedback/" element={<Contact />} />
+        <Route path="/privacy" element={<Privacy />} />
         <Route path="/Adminpage" element={<AdminPage />} />
-        <Route path="/TableBooking" element={<TableBooking />} />
+        <Route path="/tableBooking" element={<TableBooking />} />
         <Route path="/resta" element={<Res />} />
         <Route path="/:userId/resta/:id" element={<Res />} />
         <Route path="/notify" element={<Notify />} />
