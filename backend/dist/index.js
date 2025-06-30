@@ -514,12 +514,14 @@ app.put('/rejected/:id', async (req, res) => {
 app.post('/add_admin', async (req, res) => {
   const { username, name, password } = req.body;
 
+  if (!username || !name || !password) {
+    return res.status(400).send({ error: 'All fields are required.' });
+  }
+
   try {
-    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create the admin user
-    const addadmin = await prisma.admin.create({ // Corrected model name
+    const addadmin = await prisma.admin.create({
       data: {
         username,
         name,
@@ -532,12 +534,12 @@ app.post('/add_admin', async (req, res) => {
       },
     });
 
-    res.status(201).send({ addadmin });
+    res.status(201).send({ admin: addadmin });
   } catch (error) {
     console.error('Error creating admin:', error);
 
-    // Handle unique constraint violation (e.g., duplicate username)
     if (error.code === 'P2002') {
+      // Unique constraint violation in Prisma
       return res.status(400).send({ error: 'Username already exists.' });
     }
 
