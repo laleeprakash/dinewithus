@@ -6,15 +6,15 @@ function Homepage() {
   const navigate = useNavigate();
   
   const Signin_handler = () => {
-    navigate("/Signin"); // Navigate to the /Signin route
+    navigate("/signin"); // Navigate to the /Signin route
   };
 
   const Signup_handler = () => {
-    navigate("/Signup"); // Navigate to the /Signup route
+    navigate("/signup"); // Navigate to the /Signup route
   };
 
   const AdminLogin_handler = () => {
-    navigate("/AdminLogin"); // Navigate to the /AdminLogin route
+    navigate("/adminLogin"); // Navigate to the /AdminLogin route
   };
 
   return (
@@ -107,7 +107,7 @@ function Homepage() {
                       <a href="/feedback" className="text-white hover:text-amber-500 transition duration-300">Feed back</a>
                     </li>
                     <li>
-                      <a href="/Privacy" className="text-white hover:text-amber-500 transition duration-300">Privacy Policy</a>
+                      <a href="/privacy" className="text-white hover:text-amber-500 transition duration-300">Privacy Policy</a>
                     </li>
                   </ul>
                 </div>
