@@ -4,6 +4,8 @@ const express = require('express');
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
+
 const cors = require('cors');
 const app = express();
 const bodyParser = require('body-parser');  
