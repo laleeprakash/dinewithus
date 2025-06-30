@@ -4,29 +4,30 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Heading } from "../components/Heading";
 import { Inputbox } from "../components/Inputbox";
 
-const API = import.meta.env.VITE_API_URL; // Ensure this is defined in .env
+const API = import.meta.env.VITE_API_URL; // Ensure this is set in .env
 
 function Add_Resta() {
   const [name, setname] = useState("");
   const [location, setlocation] = useState("");
   const [description, setdescription] = useState("");
+  const [file, setFile] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { id } = useParams(); // ownerId
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setPreviewImage(URL.createObjectURL(file)); // For image preview
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      setPreviewImage(URL.createObjectURL(selectedFile));
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const file = document.getElementById("image").files[0];
-    if (!file) {
-      alert("Please select an image.");
+    if (!name || !location || !description || !file) {
+      alert("Please fill in all fields and select an image.");
       return;
     }
 
@@ -34,8 +35,7 @@ function Add_Resta() {
     formData.append("name", name);
     formData.append("location", location);
     formData.append("description", description);
-    formData.append("image", file); // Add image file
-    formData.append("ownerId", id);
+    formData.append("image", file); // `image` matches multer field on backend
 
     try {
       await axios.post(`${API}/addrestaurant/${id}`, formData, {
@@ -47,7 +47,7 @@ function Add_Resta() {
       alert("Restaurant created successfully!");
       navigate(`/ownerpage/${id}`);
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error creating restaurant:", error);
       alert("Error creating restaurant. Please try again.");
     }
   };
@@ -61,7 +61,11 @@ function Add_Resta() {
       <div className="flex flex-col justify-center items-center rounded-3xl">
         <div className="flex justify-center rounded-3xl">
           <div className="bg-slate-300 flex flex-col justify-center">
-            <div className="rounded-3xl bg-white w-9/10 p-8">
+            <form
+              className="rounded-3xl bg-white w-9/10 p-8"
+              onSubmit={handleSubmit}
+              encType="multipart/form-data"
+            >
               <Heading label={"Add Restaurant"} />
 
               <Inputbox
@@ -103,6 +107,7 @@ function Add_Resta() {
                   type="file"
                   accept="image/*"
                   id="image"
+                  name="image"
                   className="block w-full p-2 border border-gray-300 rounded-md"
                   onChange={handleFileChange}
                   required
@@ -122,18 +127,18 @@ function Add_Resta() {
                 <button
                   type="submit"
                   className="mt-4 p-2 px-5 rounded-2xl border border-black bg-black text-white hover:opacity-90"
-                  onClick={handleSubmit}
                 >
                   Add Restaurant
                 </button>
                 <button
+                  type="button"
                   className="mt-4 p-2 rounded-2xl border border-black px-8 hover:opacity-95"
                   onClick={handleCancel}
                 >
                   Cancel
                 </button>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       </div>
