@@ -841,7 +841,9 @@ app.get("/owner" , async function(req,res){
       password:true,
       name:true
     }
+    
   })
+  res.send(owner)
 })
 app.get("/restaurants/:restaurantId/availability", async (req, res) => {
   try {
