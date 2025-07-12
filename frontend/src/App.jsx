@@ -1,4 +1,10 @@
-import { BrowserRouter, Route, Routes as Router, useLocation, useNavigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Route,
+  Routes as Router,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import { useEffect } from "react";
 import axios from "axios";
 
@@ -34,7 +40,10 @@ import Bookedtable from "./pages/BookedTable";
 import Notify_table from "./pages/Notify_table";
 import View_Booked_dining from "./pages/View_Booked_dining";
 
-// 👇 Case-insensitive redirect component
+// Authentication wrapper
+import ProtectedRoute from "./components/ProtectedRoute";
+
+// Case-insensitive redirect
 function CaseRedirect() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -57,37 +66,164 @@ function App() {
         <Route path="/" element={<Homepage />} />
         <Route path="/signin" element={<Signin />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/homepage/:userid" element={<Home />} />
+
+        <Route
+          path="/homepage/:userid"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/restaurants" element={<Restaurants />} />
         <Route path="/restaurants/:id" element={<Res />} />
-        <Route path="/addrestaurant/:id" element={<Add_Resta />} />
+        <Route
+          path="/addrestaurant/:id"
+          element={
+            <ProtectedRoute>
+              <Add_Resta />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/adminlogin" element={<Adminlogin />} />
-        <Route path="/adminpage" element={<Adminpage />} />
+        <Route
+          path="/adminpage"
+          element={
+            <ProtectedRoute>
+              <Adminpage />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/about" element={<About />} />
         <Route path="/feedback" element={<Contact />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/adminpage" element={<AdminPage />} />
-        <Route path="/tablebooking" element={<TableBooking />} />
+        <Route
+          path="/tablebooking"
+          element={
+            <ProtectedRoute>
+              <TableBooking />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/resta" element={<Res />} />
         <Route path="/:userId/resta/:id" element={<Res />} />
-        <Route path="/notify" element={<Notify />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/profile/:id" element={<Profile />} />
+        <Route
+          path="/notify"
+          element={
+            <ProtectedRoute>
+              <Notify />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile/:id"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/feedbacks" element={<Feedback />} />
         <Route path="/contact" element={<Contact_us />} />
-        <Route path="/approvedrestaurant" element={<Approverestaurant />} />
-        <Route path="/rejectedrestaurant" element={<Rejected />} />
-        <Route path="/approve-reject/:id" element={<ApproveRejectPage />} />
+        <Route
+          path="/approvedrestaurant"
+          element={
+            <ProtectedRoute>
+              <Approverestaurant />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/rejectedrestaurant"
+          element={
+            <ProtectedRoute>
+              <Rejected />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/approve-reject/:id"
+          element={
+            <ProtectedRoute>
+              <ApproveRejectPage />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/restaurantlogin" element={<Restaurantlogin />} />
         <Route path="/owner-signup" element={<Owner_signup />} />
-        <Route path="/ownerpage/:id" element={<Ownerpage />} />
-        <Route path="/:ownerid/adddining/:id" element={<Adddining />} />
-        <Route path="/viewdining/:id" element={<Viewdining />} />
-        <Route path="/:userId/:restaurantId/tablebooking" element={<TableBooking />} />
-        <Route path="/:userId/:restaurantId/payment/:id" element={<Payment />} />
-        <Route path="/:userId/bookedtable" element={<Bookedtable />} />
-        <Route path="/:userId/:restaurantId/notify" element={<Notify_table />} />
-        <Route path="/view_booked_dining/:id" element={<View_Booked_dining />} />
+        <Route
+          path="/ownerpage/:id"
+          element={
+            <ProtectedRoute>
+              <Ownerpage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/:ownerid/adddining/:id"
+          element={
+            <ProtectedRoute>
+              <Adddining />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/viewdining/:id"
+          element={
+            <ProtectedRoute>
+              <Viewdining />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/:userId/:restaurantId/tablebooking"
+          element={
+            <ProtectedRoute>
+              <TableBooking />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/:userId/:restaurantId/payment/:id"
+          element={
+            <ProtectedRoute>
+              <Payment />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/:userId/bookedtable"
+          element={
+            <ProtectedRoute>
+              <Bookedtable />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/:userId/:restaurantId/notify"
+          element={
+            <ProtectedRoute>
+              <Notify_table />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/view_booked_dining/:id"
+          element={
+            <ProtectedRoute>
+              <View_Booked_dining />
+            </ProtectedRoute>
+          }
+        />
       </Router>
     </BrowserRouter>
   );
