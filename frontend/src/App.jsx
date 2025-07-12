@@ -41,7 +41,8 @@ import Notify_table from "./pages/Notify_table";
 import View_Booked_dining from "./pages/View_Booked_dining";
 
 // Authentication wrapper
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./pages/ProtectedRoute";
+
 
 // Case-insensitive redirect
 function CaseRedirect() {
