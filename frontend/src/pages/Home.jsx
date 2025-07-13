@@ -12,7 +12,7 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const userId = localStorage.getItem('userId');
-  const API = import.meta.env.VITE_API_URL; // ✅ API base URL from .env
+  const API = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const fetchRestaurants = async () => {
@@ -34,18 +34,9 @@ function Home() {
     restaurant.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleLogin = () => {
-    navigate("/owner-signup");
-  };
-
-  const handleDropdownClick = () => {
-    navigate(`/profile/${userId}`);
-  };
-
-  const handleBookedTable = () => {
-    navigate(`/${userId}/bookedtable`);
-  };
-
+  const handleLogin = () => navigate("/owner-signup");
+  const handleDropdownClick = () => navigate(`/profile/${userId}`);
+  const handleBookedTable = () => navigate(`/${userId}/bookedtable`);
   const handleLogout = () => {
     localStorage.removeItem('userId');
     localStorage.removeItem("token");
@@ -54,7 +45,7 @@ function Home() {
 
   return (
     <div
-      className="bg-cover bg-center w-full h-screen bg-blend-overlay"
+      className="bg-cover bg-center min-h-screen bg-blend-overlay"
       style={{
         backgroundImage: `url(${bg})`,
         backgroundSize: 'cover',
@@ -63,90 +54,76 @@ function Home() {
       }}
     >
       {/* Navigation Bar */}
-      <ul className="flex flex-row font-bold justify-end items-end gap-10 p-7 mr-20 text-white">
-        <li className="cursor-pointer hover:text-yellow-400 transition duration-300" onClick={handleLogin}>
-          Investor Relations
-        </li>
-        <li className="cursor-pointer hover:text-yellow-400 transition duration-300" onClick={handleDropdownClick}>
-          Profile
-        </li>
-        <li className="cursor-pointer hover:text-yellow-400 transition duration-300" onClick={handleBookedTable}>
-          Booked Restaurant
-        </li>
-        <li className="cursor-pointer hover:text-yellow-400 transition duration-300" onClick={handleLogout}>
-          Log out
-        </li>
+      <ul className="flex flex-wrap justify-center md:justify-end gap-4 p-5 md:pr-20 text-white font-semibold text-sm md:text-base">
+        <li className="cursor-pointer hover:text-yellow-400" onClick={handleLogin}>Investor Relations</li>
+        <li className="cursor-pointer hover:text-yellow-400" onClick={handleDropdownClick}>Profile</li>
+        <li className="cursor-pointer hover:text-yellow-400" onClick={handleBookedTable}>Booked Restaurant</li>
+        <li className="cursor-pointer hover:text-yellow-400" onClick={handleLogout}>Log out</li>
       </ul>
 
       {/* Hero Text */}
-      <div className="text-center pt-10">
-        <h2 className="font-serif text-5xl text-yellow-500 drop-shadow-lg">RESERVE YOUR SEAT</h2>
-        <h3 className="text-4xl font-light tracking-wider text-white mt-4">
-          Discover The Best Restaurants & Food
-        </h3>
+      <div className="text-center px-4 pt-10">
+        <h2 className="text-3xl md:text-5xl text-yellow-500 font-bold drop-shadow-lg">RESERVE YOUR SEAT</h2>
+        <h3 className="text-xl md:text-3xl text-white mt-3">Discover The Best Restaurants & Food</h3>
       </div>
 
       {/* Search Bar */}
-      <div className="bg-white mx-[15%] rounded-lg shadow-2xl flex items-center py-3 mt-8 px-6">
-        <div className="flex flex-row items-center w-full space-x-6">
-          {/* Location Input */}
-          <div className="flex items-center w-full bg-gray-50 rounded-full px-4 py-2">
-            <img src={locationimg} alt="Location" className="w-6 h-6" />
-            <input
-              className="w-full px-4 py-2 ml-2 rounded-full text-lg text-gray-700 focus:outline-none"
-              placeholder="Search by Location"
-              value={locationQuery}
-              onChange={(e) => setLocationQuery(e.target.value)}
-            />
-          </div>
+      <div className="bg-white mx-4 md:mx-[15%] mt-8 rounded-lg shadow-xl flex flex-col md:flex-row items-center p-4 gap-4">
+        <div className="flex items-center w-full bg-gray-100 rounded-full px-4 py-2">
+          <img src={locationimg} alt="Location" className="w-5 h-5" />
+          <input
+            className="w-full px-3 py-1 ml-2 rounded-full text-base text-gray-700 focus:outline-none"
+            placeholder="Search by Location"
+            value={locationQuery}
+            onChange={(e) => setLocationQuery(e.target.value)}
+          />
+        </div>
 
-          <div className="font-bold py-3 text-xl text-gray-400">|</div>
+        <div className="font-bold hidden md:inline">|</div>
 
-          {/* Restaurant Name Input */}
-          <div className="flex items-center w-full bg-gray-50 rounded-full px-4 py-2">
-            <img src={searchicon} alt="Search" className="w-6 h-6" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-2 ml-2 rounded-full text-lg text-gray-700 focus:outline-none"
-              placeholder="Search your Favorite Restaurant"
-            />
-          </div>
+        <div className="flex items-center w-full bg-gray-100 rounded-full px-4 py-2">
+          <img src={searchicon} alt="Search" className="w-5 h-5" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full px-3 py-1 ml-2 rounded-full text-base text-gray-700 focus:outline-none"
+            placeholder="Search your Favorite Restaurant"
+          />
         </div>
       </div>
 
       {/* Restaurant List */}
-      <div className="mt-8 text-white text-lg px-10">
-        <h4 className="text-center font-semibold text-2xl mb-6">
+      <div className="mt-6 px-4 md:px-10 text-white">
+        <h4 className="text-center font-semibold text-xl md:text-2xl mb-4">
           Restaurants in {locationQuery || 'Selected Location'}
         </h4>
-        <div className="flex flex-col gap-6 mt-4">
+        <div className="flex flex-col gap-4">
           {loading ? (
-            <p className="text-center text-white font-semibold">Loading restaurants...</p>
+            <p className="text-center font-medium">Loading restaurants...</p>
           ) : filteredRestaurants.length > 0 ? (
             filteredRestaurants.map((restaurant) => (
               <div
                 key={restaurant.id}
-                className="flex justify-between items-center bg-white p-5 rounded-lg shadow-lg hover:shadow-xl cursor-pointer transition duration-300 ease-in-out font-extrabold"
+                className="flex flex-col md:flex-row items-center bg-white text-black p-4 rounded-lg shadow-md hover:shadow-lg cursor-pointer transition duration-200"
                 onClick={() => navigate(`/${userId}/resta/${restaurant.id}`)}
               >
-                <div className="w-1/4">
+                <div className="w-full md:w-1/4 mb-3 md:mb-0">
                   <img
                     src={restaurant.imageurl}
                     alt={restaurant.name}
-                    className="w-full h-auto rounded-lg object-cover"
+                    className="w-full h-48 md:h-auto rounded-lg object-cover"
                   />
                 </div>
-                <div className="flex flex-col w-[70%]">
-                  <h5 className="text-xl font-semibold text-gray-800">{restaurant.name}</h5>
+                <div className="flex flex-col w-full md:w-[70%] md:ml-6">
+                  <h5 className="text-lg font-bold text-gray-800">{restaurant.name}</h5>
                   <p className="text-sm text-gray-600">{restaurant.description}</p>
                   <p className="text-xs text-gray-500 mt-1">{restaurant.location}</p>
                 </div>
               </div>
             ))
           ) : (
-            <p className="text-center text-white font-semibold">No restaurants found matching your criteria.</p>
+            <p className="text-center font-medium">No restaurants found matching your criteria.</p>
           )}
         </div>
       </div>
