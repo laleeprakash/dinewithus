@@ -78,7 +78,7 @@ function App() {
         <Route path="/adminlogin" element={<Adminlogin />} />
         <Route
           path="/adminpage"
-          element={<ProtectedRoute><Adminpage /></ProtectedRoute>}
+          element={<Adminpage />}
         />
         <Route path="/about" element={<About />} />
         <Route path="/feedback" element={<Contact />} />
