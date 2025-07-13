@@ -105,15 +105,15 @@ function App() {
         <Route path="/contact" element={<Contact_us />} />
         <Route
           path="/approvedrestaurant"
-          element={<ProtectedRoute><Approverestaurant /></ProtectedRoute>}
+          element={<Approverestaurant />}
         />
         <Route
           path="/rejectedrestaurant"
-          element={<ProtectedRoute><Rejected /></ProtectedRoute>}
+          element={<Rejected />}
         />
         <Route
           path="/approve-reject/:id"
-          element={<ProtectedRoute><ApproveRejectPage /></ProtectedRoute>}
+          element={<ApproveRejectPage/>}
         />
         <Route path="/restaurantlogin" element={<Restaurantlogin />} />
         <Route path="/owner-signup" element={<Owner_signup />} />
