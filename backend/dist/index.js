@@ -579,38 +579,42 @@ app.post('/add_admin', async (req, res) => {
 
 // Admin login endpoint
 app.post('/adminlogin', async (req, res) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
-  if (!email || !password) {
-    return res.status(400).send({ error: 'Please provide both email and password.' });
+  if (!username || !password) {
+    return res.status(400).send({ error: 'Username and password are required.' });
   }
 
   try {
-    const admin = await prisma.admin.findUnique({ where: { username: email } }); // Corrected query
+    const admin = await prisma.admin.findUnique({ where: { username } });
 
     if (!admin) {
-      return res.status(400).send({ error: 'Invalid credentials. Admin not found.' });
+      return res.status(401).send({ error: 'Admin not found' });
     }
 
-    const isPasswordCorrect = await bcrypt.compare(password, admin.password);
-
-    if (!isPasswordCorrect) {
-      return res.status(400).send({ error: 'Invalid credentials. Incorrect password.' });
+    const isMatch = await bcrypt.compare(password, admin.password);
+    if (!isMatch) {
+      return res.status(401).send({ error: 'Invalid password' });
     }
 
-    // Token generation for admin (optional, based on your requirements)
-    const token = jwt.sign({ adminId: admin.username }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ adminId: admin.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
     res.status(200).send({
-      message: 'Signed in as admin successfully!',
+      success: true,
+      message: 'Login successful',
       token,
-      admin: { username: admin.username, name: admin.name },
+      admin: {
+        id: admin.id,
+        username: admin.username,
+        name: admin.name
+      }
     });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({ error: 'An error occurred while signing in as admin.' });
+  } catch (err) {
+    console.error('Login error:', err);
+    res.status(500).send({ error: 'Internal server error' });
   }
 });
+
 app.get("/restaurant/:id", async function (req, res) {
   const { id } = req.params; // Extract id from request parameters
 
