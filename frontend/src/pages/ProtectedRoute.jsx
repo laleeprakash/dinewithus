@@ -7,7 +7,7 @@ function ProtectedRoute({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("authToken");
 
     if (!token) {
       setIsAuthenticated(false);
@@ -16,10 +16,9 @@ function ProtectedRoute({ children }) {
       setIsAuthenticated(true);
     }
 
-    setIsChecking(false); // Stop showing blank screen after check
+    setIsChecking(false);
   }, [navigate]);
 
-  // Optionally show a loading screen while checking auth
   if (isChecking) {
     return <div>Loading...</div>;
   }
