@@ -15,23 +15,19 @@ function Adminlogin() {
 
     try {
       const response = await axios.post(`${API}/adminlogin`, {
-        username,
-        password,
+        username: username,
+        password: password,
       });
 
-      if (response.data.success && response.data.token) {
-        // Save admin token and ID to localStorage
-        localStorage.setItem("adminToken", response.data.token);
-        localStorage.setItem("adminId", response.data.admin.id);
-        localStorage.setItem("adminName", response.data.admin.name);
-
+      if (response.data.success) {
+        // Navigate to admin page after successful login
         navigate("/adminpage");
       } else {
         setError("Invalid admin credentials.");
       }
     } catch (err) {
       console.error("Login error:", err);
-      setError(err.response?.data?.error || "Login failed. Try again.");
+      setError("Login failed. Please check your credentials or try again later.");
     }
   };
 
@@ -39,17 +35,20 @@ function Adminlogin() {
     <div className="flex justify-center items-center w-full h-screen bg-white">
       <div className="bg-white p-8 rounded-xl w-full max-w-lg flex flex-col justify-center items-center shadow-lg">
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">Login as Admin</h1>
-        <p className="text-center text-gray-600 mb-6">Use your credentials to login</p>
+        <p className="text-center text-gray-600 mb-6">Use the credentials to login</p>
 
-        {error && <div className="mb-4 text-red-500 text-center font-semibold">{error}</div>}
+        {/* Show error if login fails */}
+        {error && (
+          <div className="mb-4 text-red-500 text-center font-semibold">{error}</div>
+        )}
 
         <form onSubmit={handleLogin} className="w-full">
           <div className="mb-4">
-            <label htmlFor="username" className="block text-gray-700 text-lg">Username</label>
+            <label htmlFor="email-signin" className="block text-gray-700 text-lg">Email</label>
             <input
-              type="text"
-              id="username"
-              placeholder="Enter your username"
+              type="email"
+              id="email-signin"
+              placeholder="Enter your email"
               className="w-full p-3 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -58,10 +57,10 @@ function Adminlogin() {
           </div>
 
           <div className="mb-6">
-            <label htmlFor="password" className="block text-gray-700 text-lg">Password</label>
+            <label htmlFor="password-signin" className="block text-gray-700 text-lg">Password</label>
             <input
               type="password"
-              id="password"
+              id="password-signin"
               placeholder="Enter your password"
               className="w-full p-3 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               value={password}
@@ -79,8 +78,16 @@ function Adminlogin() {
         </form>
 
         <div className="text-center mt-4">
+          <p className="text-sm">
+            Don't have an account?{" "}
+            <a href="/signup" className="font-bold text-green-500 opacity-90 hover:text-green-600 hover:opacity-100">
+              Sign Up
+            </a>
+          </p>
           <p className="text-sm mt-2">
-            <a href="/signin" className="font-bold text-green-500 hover:text-green-600">Login as User</a>
+            <a href="/signin" className="font-bold text-green-500 opacity-90 hover:text-green-600 hover:opacity-100">
+              Login as User
+            </a>
           </p>
         </div>
       </div>
