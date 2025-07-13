@@ -549,13 +549,13 @@ app.post('/add_admin', async (req, res) => {
   }
 
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
+    
 
     const addadmin = await prisma.admin.create({
       data: {
         username,
         name,
-        password: hashedPassword,
+        password
       },
       select: {
         id: true,

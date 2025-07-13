@@ -15,7 +15,7 @@ function Adminlogin() {
 
     try {
       const response = await axios.post(`${API}/adminlogin`, {
-        email: username,
+        username: username,
         password: password,
       });
 
