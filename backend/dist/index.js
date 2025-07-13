@@ -36,70 +36,100 @@ app.get("/users",async function(req,res){
 app.post('/signup', async (req, res) => {
   const { username, name, password, phone } = req.body;
 
-  if (!username || !name || !password) {
-    return res.status(400).send({ error: 'Please provide username, name, and password.' });
+  // Basic validation
+  if (!username || !name || !password || !phone) {
+    return res.status(400).json({ error: 'Please provide username, name, password, and phone.' });
   }
 
   try {
-    const existingUser = await prisma.user.findUnique({ where: { username } });
+    const existingUser = await prisma.user.findUnique({
+      where: { username }
+    });
 
     if (existingUser) {
-      return res.status(400).send({ msg: 'User already exists.' });
+      return res.status(400).json({ error: 'User already exists.' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await prisma.user.create({
-      data: { username, name, phone, password: hashedPassword },
-      select: { username: true, name: true },
+    const newUser = await prisma.user.create({
+      data: {
+        username,
+        name,
+        phone,
+        password: hashedPassword
+      },
+      select: {
+        id: true,
+        username: true,
+        name: true
+      }
     });
 
-    const token = jwt.sign({ userId: user.username }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign(
+      { userId: newUser.id, username: newUser.username },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
 
-    res.status(201).send({
+    return res.status(201).json({
       message: 'User created successfully!',
-      user,
-      token,
+      user: newUser,
+      token
     });
+
   } catch (error) {
-    console.error(error);
-    res.status(500).send({ error: 'An error occurred while creating the user.' });
+    console.error('Signup error:', error);
+    return res.status(500).json({ error: 'An error occurred while creating the user.' });
   }
 });
 
-// Signin - authenticate the user and return JWT token
+
 app.post('/signin', async (req, res) => {
   const { username, password } = req.body;
 
+  // Basic validation
   if (!username || !password) {
-    return res.status(400).send({ error: 'Please provide both username and password.' });
+    return res.status(400).json({ error: 'Please provide both username and password.' });
   }
 
   try {
     const user = await prisma.user.findUnique({ where: { username } });
 
     if (!user) {
-      return res.status(400).send({ error: 'Invalid credentials. User not found.' });
+      return res.status(401).json({ error: 'Invalid credentials. User not found.' });
     }
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
     if (!isPasswordCorrect) {
-      return res.status(400).send({ error: 'Invalid credentials. Incorrect password.' });
+      return res.status(401).json({ error: 'Invalid credentials. Incorrect password.' });
     }
 
-    const token = jwt.sign({ userId: user.username }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: user.id, username: user.username }, // Add userId and username to payload
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
 
-    res.status(200).send({
+    // Send response
+    return res.status(200).json({
       message: 'Signed in successfully!',
-      token,
-      user: { id: user.id, username: user.username, name: user.name }, // Include user ID in the response
+      token, // <-- Important for frontend to store this in localStorage
+      user: {
+        id: user.id,
+        username: user.username,
+        name: user.name,
+      },
     });
+
   } catch (error) {
-    console.error(error);
-    res.status(500).send({ error: 'An error occurred while signing in.' });
+    console.error('Signin error:', error);
+    return res.status(500).json({ error: 'An error occurred while signing in. Please try again later.' });
   }
 });
+
 
 
 app.post("/owner-signup", async function (req, res) {

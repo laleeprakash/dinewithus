@@ -3,24 +3,21 @@ import { useNavigate } from "react-router-dom";
 
 function ProtectedRoute({ children }) {
   const navigate = useNavigate();
-  const [isChecking, setIsChecking] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("authToken");
+    const token = localStorage.getItem("token");
 
     if (!token) {
       setIsAuthenticated(false);
-      navigate("/signin"); // Redirect to login if not authenticated
+      navigate("/signin"); // redirect to login
     } else {
       setIsAuthenticated(true);
     }
-
-    setIsChecking(false);
   }, [navigate]);
 
-  if (isChecking) {
-    return <div>Loading...</div>;
+  if (isAuthenticated === null) {
+    return <div>Loading...</div>; // show a loader while checking
   }
 
   return isAuthenticated ? children : null;
