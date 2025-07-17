@@ -10,9 +10,10 @@ function AdminPage() {
   const API = import.meta.env.VITE_API_URL; // ✅ Use environment variable
 
   const handlenavigate = () => navigate("/feedbacks");
+  const handleuserdetais = () => navigate("/userdetails")
   const handleApproved = () => navigate("/approvedrestaurant");
   const handleRejected = () => navigate("/rejectedrestaurant");
-
+  const handlerestaurantdetails = () => navigate("/restaurantdetails")
   useEffect(() => {
     const fetchRestaurants = async () => {
       try {
@@ -39,6 +40,18 @@ function AdminPage() {
           onClick={handlenavigate}
         >
           Feed Backs
+        </div>
+        <div
+          className="flex flex-row-reverse font-extrabold text-lg cursor-pointer hover:opacity-20"
+          onClick={handleuserdetais}
+        >
+          User Details
+        </div>
+         <div
+          className="flex flex-row-reverse font-extrabold text-lg cursor-pointer hover:opacity-20"
+          onClick={handlerestaurantdetails}
+        >
+          Restaurant Details
         </div>
         <div
           className="flex flex-row-reverse font-extrabold text-lg cursor-pointer hover:opacity-20"

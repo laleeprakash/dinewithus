@@ -41,6 +41,8 @@ import View_Booked_dining from "./pages/View_Booked_dining";
 // Authentication wrapper
 import ProtectedRoute from "./pages/ProtectedRoute";
 import Userdetails from "./pages/Userdetails";
+import Restaurantdetails from "./pages/Restaurantdetails";
+import AdminProtectedRoute from "./pages/Adminprotectedroute";
 
 // Case-insensitive redirect
 function CaseRedirect() {
@@ -79,7 +81,7 @@ function App() {
         <Route path="/adminlogin" element={<Adminlogin />} />
         <Route
           path="/adminpage"
-          element={<Adminpage />}
+          element={<Adminpage />  }
         />
         <Route path="/about" element={<About />} />
         <Route path="/feedback" element={<Contact />} />
@@ -111,6 +113,10 @@ function App() {
         <Route
         path="/userdetails"
         element={<Userdetails/>}
+        />
+         <Route
+        path="/restaurantdetails"
+        element={<Restaurantdetails/>}
         />
         <Route
           path="/rejectedrestaurant"

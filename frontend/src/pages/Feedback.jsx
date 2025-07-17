@@ -1,10 +1,12 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 
 function Feedback() {
+  const navigate =useNavigate()
   const [feedback, setFeedback] = useState([]);
   const API = import.meta.env.VITE_API_URL; // Get the base URL from env
-
+const handlenavigate = () => navigate("/adminpage")
   useEffect(() => {
     const fetchFeedback = async () => {
       try {
@@ -20,7 +22,12 @@ function Feedback() {
 
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-4 flex justify-center mt-4">Feedback</h2>
+     <div className="flex flex-row justify-between px-8">
+       <h2 className="text-xl font-semibold mb-4 flex justify-center mt-4">Feedback</h2>
+       <h2 className="text-xl font-semibold mb-4 flex justify-center mt-4 cursor-pointer" onClick={handlenavigate}>
+        Back to Dashboard
+       </h2>
+     </div>
       {feedback.length === 0 ? (
         <p>No feedback available.</p>
       ) : (
