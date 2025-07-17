@@ -9,6 +9,14 @@ function ProtectedRoute({ children }) {
     const token = localStorage.getItem("token");
     const tokenTimestamp = localStorage.getItem("tokenTimestamp");
 
+    const logout = () => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("tokenTimestamp");
+      localStorage.removeItem("userId");
+      setIsAuthenticated(false);
+      navigate("/signin");
+    };
+
     if (!token || !tokenTimestamp) {
       logout();
       return;
@@ -17,23 +25,16 @@ function ProtectedRoute({ children }) {
     const now = Date.now();
     const elapsed = now - parseInt(tokenTimestamp, 10);
 
-    // 1 hour = 3600000 milliseconds
+    // Token valid for 1 hour (3600000 ms)
     if (elapsed > 3600000) {
       logout();
     } else {
       setIsAuthenticated(true);
     }
-
-    function logout() {
-      localStorage.removeItem("token");
-      localStorage.removeItem("tokenTimestamp");
-      localStorage.removeItem("userId");
-      setIsAuthenticated(false);
-      navigate("/signin");
-    }
   }, [navigate]);
 
   if (isAuthenticated === null) {
+    // While checking auth status
     return <div>Loading...</div>;
   }
 

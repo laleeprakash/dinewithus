@@ -1,45 +1,44 @@
-  import { useEffect, useState } from "react";
-  import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-  function AdminProtectedRoute({ children }) {
-    const navigate = useNavigate();
-    const [isAuthenticated, setIsAuthenticated] = useState(null);
+function AdminProtectedRoute({ children }) {
+  const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
 
-    useEffect(() => {
-      const token = localStorage.getItem("adminToken");
-      const tokenTimestamp = localStorage.getItem("adminTokenTimestamp");
+  useEffect(() => {
+    const token = localStorage.getItem("adminToken");
+    const tokenTimestamp = localStorage.getItem("adminTokenTimestamp");
 
-      if (!token || !tokenTimestamp) {
-        logout();
-        return;
-      }
+    const logout = () => {
+      localStorage.removeItem("adminToken");
+      localStorage.removeItem("adminTokenTimestamp");
+      localStorage.removeItem("adminId");
+      localStorage.removeItem("adminName");
+      setIsAuthenticated(false);
+      navigate("/adminlogin");
+    };
 
-      const now = Date.now();
-      const elapsed = now - parseInt(tokenTimestamp, 10);
-
-      // 1 hour = 3600000 milliseconds
-      if (elapsed > 3600000) {
-        logout();
-      } else {
-        setIsAuthenticated(true);
-      }
-
-      function logout() {
-        localStorage.removeItem("adminToken");
-        localStorage.removeItem("adminTokenTimestamp");
-        localStorage.removeItem("adminId");
-        localStorage.removeItem("adminName");
-        setIsAuthenticated(false);
-        navigate("/adminlogin");
-      }
-    }, [navigate]);
-
-    if (isAuthenticated === null) {
-      // Still checking authentication, you can show a loading spinner or similar here
-      return <div>Loading...</div>;
+    if (!token || !tokenTimestamp) {
+      logout();
+      return;
     }
 
-    return isAuthenticated ? children : null;
+    const now = Date.now();
+    const elapsed = now - parseInt(tokenTimestamp, 10);
+
+    // Token valid for 1 hour (3600000 ms)
+    if (elapsed > 3600000) {
+      logout();
+    } else {
+      setIsAuthenticated(true);
+    }
+  }, [navigate]);
+
+  if (isAuthenticated === null) {
+    return <div>Loading...</div>;
   }
 
-  export default AdminProtectedRoute;
+  return isAuthenticated ? children : null;
+}
+
+export default AdminProtectedRoute;

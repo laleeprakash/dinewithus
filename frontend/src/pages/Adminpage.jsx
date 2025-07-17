@@ -7,17 +7,28 @@ function AdminPage() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const API = import.meta.env.VITE_API_URL; // ✅ Use environment variable
+  const API = import.meta.env.VITE_API_URL;
 
+  // Navigation handlers
   const handlenavigate = () => navigate("/feedbacks");
-  const handleuserdetais = () => navigate("/userdetails")
+  const handleuserdetais = () => navigate("/userdetails");
   const handleApproved = () => navigate("/approvedrestaurant");
   const handleRejected = () => navigate("/rejectedrestaurant");
-  const handlerestaurantdetails = () => navigate("/restaurantdetails")
+  const handlerestaurantdetails = () => navigate("/restaurantdetails");
+
+  // Logout handler
+  const handleLogout = () => {
+    localStorage.removeItem("adminToken");
+    localStorage.removeItem("adminTokenTimestamp");
+    localStorage.removeItem("adminId");
+    localStorage.removeItem("adminName");
+    navigate("/adminlogin");
+  };
+
   useEffect(() => {
     const fetchRestaurants = async () => {
       try {
-        const response = await axios.get(`${API}/restaurants`); // ✅ Use dynamic base URL
+        const response = await axios.get(`${API}/restaurants`);
         setRestaurants(response.data.restaurants || []);
       } catch (error) {
         console.error("Error fetching restaurants:", error);
@@ -26,7 +37,7 @@ function AdminPage() {
       }
     };
     fetchRestaurants();
-  }, [API]); // ✅ Watch API in case it changes
+  }, [API]);
 
   const handleApproveReject = (id) => {
     navigate(`/approve-reject/${id}`);
@@ -34,7 +45,15 @@ function AdminPage() {
 
   return (
     <div className="p-6">
-      <div className="flex flex-row-reverse gap-4 right-1 top-0">
+      {/* Top menu with Logout */}
+      <div className="flex flex-row-reverse gap-4 right-1 top-0 items-center">
+        <button
+          onClick={handleLogout}
+          className="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-md"
+        >
+          Logout
+        </button>
+
         <div
           className="flex flex-row-reverse font-extrabold text-lg cursor-pointer hover:opacity-20"
           onClick={handlenavigate}
@@ -47,7 +66,7 @@ function AdminPage() {
         >
           User Details
         </div>
-         <div
+        <div
           className="flex flex-row-reverse font-extrabold text-lg cursor-pointer hover:opacity-20"
           onClick={handlerestaurantdetails}
         >
@@ -66,7 +85,9 @@ function AdminPage() {
           Rejected Restaurants
         </div>
       </div>
+
       <h1 className="text-3xl font-bold mb-6">Admin - Pending Restaurant Approvals</h1>
+
       {loading ? (
         <div className="text-center">Loading...</div>
       ) : (

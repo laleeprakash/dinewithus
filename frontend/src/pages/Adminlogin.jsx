@@ -1,20 +1,23 @@
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { Heading } from "../components/Heading";
+import { Inputbox } from "../components/Inputbox";
+import { Button } from "../components/Button";
 import axios from "axios";
 
 function Adminlogin() {
+  const API = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [isLoggingIn, setIsLoggingIn] = useState(false); // 👈 New loading state
-
-  const API = import.meta.env.VITE_API_URL;
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
-    setIsLoggingIn(true); // 👈 Start loading
+    setIsLoggingIn(true);
 
     try {
       const response = await axios.post(`${API}/adminlogin`, {
@@ -23,7 +26,6 @@ function Adminlogin() {
       });
 
       if (response.data.success) {
-        // Save token if needed
         localStorage.setItem("adminToken", response.data.token);
         localStorage.setItem("adminId", response.data.admin.id);
         localStorage.setItem("adminName", response.data.admin.name);
@@ -34,36 +36,32 @@ function Adminlogin() {
       }
     } catch (err) {
       console.error("Login error:", err);
-      setError(err.response?.data?.error || "Login failed. Please check your credentials or try again.");
+      setError(
+        err.response?.data?.error || "Login failed. Please check your credentials or try again."
+      );
     } finally {
-      setIsLoggingIn(false); // 👈 Stop loading
+      setIsLoggingIn(false);
     }
   };
 
   return (
-    <div className="flex justify-center items-center w-full h-screen bg-white">
+    <div className="flex justify-center items-center w-full h-screen bg-cover bg-center">
       <div className="bg-white p-8 rounded-xl w-full max-w-lg flex flex-col justify-center items-center shadow-lg">
-        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">Login as Admin</h1>
-        <p className="text-center text-gray-600 mb-6">Use your credentials to login</p>
+        <Heading label="Login as Admin" />
 
-        {/* Error Message */}
         {error && (
-          <div className="mb-4 text-red-500 text-center font-semibold">{error}</div>
-        )}
-
-        {/* Loading Message */}
-        {isLoggingIn && (
-          <div className="mb-4 text-blue-500 text-center font-medium">Logging in, please wait...</div>
+          <div className="mb-4 text-red-600 text-center font-semibold">{error}</div>
         )}
 
         <form onSubmit={handleLogin} className="w-full">
           <div className="mb-4">
-            <label htmlFor="username" className="block text-gray-700 text-lg">Username</label>
-            <input
+            <label htmlFor="username" className="block text-gray-700 text-lg">
+              Username
+            </label>
+            <Inputbox
               type="text"
               id="username"
               placeholder="Enter your username"
-              className="w-full p-3 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
@@ -72,12 +70,13 @@ function Adminlogin() {
           </div>
 
           <div className="mb-6">
-            <label htmlFor="password" className="block text-gray-700 text-lg">Password</label>
-            <input
+            <label htmlFor="password" className="block text-gray-700 text-lg">
+              Password
+            </label>
+            <Inputbox
               type="password"
               id="password"
               placeholder="Enter your password"
-              className="w-full p-3 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -85,30 +84,22 @@ function Adminlogin() {
             />
           </div>
 
-          <button
+          <Button
             type="submit"
+            label={isLoggingIn ? "Logging in..." : "Login"}
             disabled={isLoggingIn}
-            className={`w-full p-3 font-semibold rounded-md transition duration-200 ${
-              isLoggingIn
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-green-600 text-white hover:bg-green-500"
-            }`}
-          >
-            {isLoggingIn ? "Logging in..." : "Login"}
-          </button>
+            className="w-full bg-green-600 text-white rounded p-2"
+          />
         </form>
 
         <div className="text-center mt-4">
           <p className="text-sm">
-            Don't have an account?{" "}
-            <a href="/signup" className="font-bold text-green-500 hover:text-green-600">
-              Sign Up
-            </a>
-          </p>
-          <p className="text-sm mt-2">
-            <a href="/signin" className="font-bold text-green-500 hover:text-green-600">
+            <Link
+              to="/signin"
+              className="font-bold text-green-500 opacity-90 hover:text-green-600 hover:opacity-100"
+            >
               Login as User
-            </a>
+            </Link>
           </p>
         </div>
       </div>

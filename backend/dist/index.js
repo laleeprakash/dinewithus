@@ -578,43 +578,53 @@ app.post('/add_admin', async (req, res) => {
   }
 });
 
-// Admin login endpoint
-app.post('/adminlogin', async (req, res) => {
+
+app.post("/adminlogin", async (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
-    return res.status(400).send({ error: 'Username and password are required.' });
+    return res.status(400).json({ error: "Username and password are required." });
   }
 
   try {
-    const admin = await prisma.admin.findUnique({ where: { username } });
+    const admin = await prisma.admin.findUnique({
+      where: { username },
+    });
 
     if (!admin) {
-      return res.status(401).send({ error: 'Admin not found' });
+      return res.status(401).json({ error: "Admin not found" });
     }
 
     const isMatch = await bcrypt.compare(password, admin.password);
     if (!isMatch) {
-      return res.status(401).send({ error: 'Invalid password' });
+      return res.status(401).json({ error: "Invalid password" });
     }
 
-    const token = jwt.sign({ adminId: admin.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign(
+      { adminId: admin.id },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
 
-    res.status(200).send({
+    res.status(200).json({
       success: true,
-      message: 'Login successful',
+      message: "Login successful",
       token,
       admin: {
         id: admin.id,
         username: admin.username,
-        name: admin.name
-      }
+        name: admin.name,
+      },
     });
   } catch (err) {
-    console.error('Login error:', err);
-    res.status(500).send({ error: 'Internal server error' });
+    console.error("Login error:", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
+
+
+
+
 app.get("/userdetails", async function(req,res){
     const userdetails  =  await prisma.user.findMany({
       select:{
