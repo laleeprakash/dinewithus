@@ -70,7 +70,7 @@ function App() {
 
         <Route
           path="/homepage/:userid"
-          element={<ProtectedRoute><Home /></ProtectedRoute>}
+          element={<Home />}
         />
         <Route path="/restaurants" element={<Restaurants />} />
         <Route path="/restaurants/:id" element={<Res />} />
