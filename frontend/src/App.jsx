@@ -40,6 +40,7 @@ import View_Booked_dining from "./pages/View_Booked_dining";
 
 // Authentication wrapper
 import ProtectedRoute from "./pages/ProtectedRoute";
+import Userdetails from "./pages/Userdetails";
 
 // Case-insensitive redirect
 function CaseRedirect() {
@@ -106,6 +107,10 @@ function App() {
         <Route
           path="/approvedrestaurant"
           element={<Approverestaurant />}
+        />
+        <Route
+        path="/userdetails"
+        element={<Userdetails/>}
         />
         <Route
           path="/rejectedrestaurant"

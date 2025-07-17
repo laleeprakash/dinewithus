@@ -10,7 +10,8 @@ const bodyParser = require('body-parser');
 const prisma = new PrismaClient(); 
 
 app.use(cors({
-  origin: 'https://dinewith.netlify.app',
+  origin:[ 'https://dinewith.netlify.app',
+  "http://localhost:5173" ],
   credentials: true
 }));
 app.use(express.json());
@@ -614,6 +615,101 @@ app.post('/adminlogin', async (req, res) => {
     res.status(500).send({ error: 'Internal server error' });
   }
 });
+app.get("/userdetails", async function(req,res){
+    const userdetails  =  await prisma.user.findMany({
+      select:{
+        id:true,
+        username:true,
+        name:true
+      }
+    })
+    res.send(userdetails)
+})
+
+app.get("/admin_dashboard_data", async (req, res) => {
+  try {
+    const restaurantDetails = await prisma.restaurant_owner.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        restaurant: {
+          select: {
+            id: true,
+            name: true,
+            location: true,
+            description: true,
+            imageurl: true,
+            approval: true, // Keeping approval status
+            tables: {
+              select: {
+                id: true,
+                tableNumber: true,
+                capacity: true,
+                status: true
+              }
+            },
+            bookings: {
+              select: {
+                id: true,
+                bookingDate: true,
+                numberOfGuests: true,
+                customerId: true,
+                user: {
+                  select: {
+                    id: true,
+                    username: true,
+                    name: true,
+                    phone: true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    });
+
+    const usersWithBookings = await prisma.user.findMany({
+      select: {
+        id: true,
+        username: true,
+        name: true,
+        phone: true,
+        bookings: {
+          select: {
+            id: true,
+            bookingDate: true,
+            numberOfGuests: true,
+            table: {
+              select: {
+                tableNumber: true,
+                capacity: true,
+                status: true
+              }
+            },
+            restaurant: {
+              select: {
+                id: true,
+                name: true,
+                location: true
+              }
+            }
+          }
+        }
+      }
+    });
+
+    res.json({
+      restaurantDetails,
+      usersWithBookings
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error fetching admin dashboard data");
+  }
+});
+
 
 app.get("/restaurant/:id", async function (req, res) {
   const { id } = req.params; // Extract id from request parameters
